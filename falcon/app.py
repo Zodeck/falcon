@@ -957,6 +957,20 @@ class App:
 
             self._error_handlers[exc] = handler
 
+    def add_get_route(self, uri_template: str, handler: Callable[[Request, Response], None]) -> None:
+        """Add a route for GET requests with a function handler.
+
+        Args:
+            uri_template (str): A templatized URI.
+            handler (callable): A function taking the form `func(req, resp)`.
+        """
+
+        class FunctionResource:
+            def on_get(self, req: Request, resp: Response) -> None:
+                handler(req, resp)
+
+        self.add_route(uri_template, FunctionResource())
+
     def set_error_serializer(self, serializer: ErrorSerializer) -> None:
         """Override the default serializer for instances of :class:`~.HTTPError`.
 
